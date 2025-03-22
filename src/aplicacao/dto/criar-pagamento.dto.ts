@@ -4,9 +4,9 @@ export class CriarPagamentoDto {
   @IsInt({ message: 'O valor deve ser um número inteiro' })
   @IsNotEmpty({ message: 'Campo obrigatório' })
   codAss: number;
-  @Matches(/^\d+(\.\d{2})$/, {
-    message: 'O valor deve ter exatamente duas casas decimais',
-  })
+  // @Matches(/^\d+(\.\d{2})$/, {
+  //   message: 'O valor deve ter exatamente duas casas decimais',
+  // })
   @IsNotEmpty({ message: 'Campo obrigatório' })
   @Min(1, { message: 'O valor deve ser maior que 1' })
   valorPago: number;
