@@ -9,7 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        host: 'localhost',
+        host: configService.get<string>('MYSQL_HOST'),
         port: parseInt(configService.get<string>('MYSQL_PORT'), 10),
         username: configService.get<string>('MYSQL_USERNAME'),
         password: configService.get<string>('MYSQL_ROOT_PASSWORD'),
