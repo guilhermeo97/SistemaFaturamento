@@ -1,18 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class PublicarEventoPagamento {
   constructor(
-    @Inject('GestaoOperadoraTelecom') private readonly client: ClientProxy,
+    @Inject('FilaPlanosAtivos') private clientPlanosAtivos: ClientProxy,
+    @Inject('FilaSistemaGestao') private clientSistemaGestao: ClientProxy,
   ) {}
   async enviar(codAss: number, valorPago: number, dataPagamento: Date) {
-    const pattern = { cmd: 'novo_pagamento' };
-    console.log(pattern);
-    const payload = { codAss, valorPago, dataPagamento };
-    const publicar = this.client.emit({ cmd: 'novo_pagamento' }, payload);
-    await lastValueFrom(publicar);
+    const pattern = 'pagamento.novo';
+    const publicarPlanosAtivos = this.clientPlanosAtivos.emit(
+      { exchange: 'pagamento_ex', routingKey: 'pagamento.novo' },
+      {
+        codAss,
+        valorPago,
+        dataPagamento,
+      },
+    );
+
+    const publicarSistemasGestao = this.clientSistemaGestao.emit(
+      { exchange: 'pagamento_ex', routingKey: 'pagamento.novo' },
+      {
+        codAss,
+        valorPago,
+        dataPagamento,
+      },
+    );
     console.log('Evento publicado com sucesso');
   }
 }
